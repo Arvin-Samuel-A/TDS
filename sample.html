@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        const data = JSON.parse(`[{"name":"Alice","age":22},{"name":"Bob","age":22},{"name":"Charlie","age":17},{"name":"David","age":21},{"name":"Emma","age":62},{"name":"Frank","age":80},{"name":"Grace","age":41},{"name":"Henry","age":59},{"name":"Ivy","age":50},{"name":"Jack","age":70},{"name":"Karen","age":16},{"name":"Liam","age":4},{"name":"Mary","age":93},{"name":"Nora","age":35},{"name":"Oscar","age":60},{"name":"Paul","age":61}]`);
+        data.sort((val1, val2) => {
+            const diff = val1.age - val2.age;
+            if(diff === 0) {
+                return val1.name.localeCompare(val2.name);
+            } else {
+                return diff;
+            }
+        });
+        console.log(data);
+    </script>
+</body>
+</html>
