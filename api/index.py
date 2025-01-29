@@ -1,26 +1,31 @@
 import json
 import os
 from http.server import BaseHTTPRequestHandler
+from urllib.parse import urlparse, parse_qs
 
 class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # Enable CORS
         self.send_response(200)
         self.send_header('Content-type', 'application/json')
-        self.send_header('Access-Control-Allow-Origin', '*')  # Allow CORS
+        self.send_header('Access-Control-Allow-Origin', '*')  # Allow requests from any origin
         self.end_headers()
 
-        # Load student data
-        with open(os.path.join(os.path.dirname(__file__), 'q-vercel-python.json')) as f:
+        # Load student data from JSON file
+        json_path = os.path.join(os.path.dirname(__file__), 'q-vercel-python.json')
+        with open(json_path, 'r') as f:
             students = json.load(f)
 
         # Parse query parameters
-        query = self.path.split('?')[-1]
-        names = [pair.split('=')[1] for pair in query.split('&') if 'name=' in pair]
+        query_params = parse_qs(urlparse(self.path).query)
+        names = query_params.get("name", [])  # Get 'name' values from query
 
-        # Fetch marks
-        marks = [students.get(name, 0) for name in names]
+        # Extract marks
+        marks = []
+        for name in names:
+            mark = next((s["marks"] for s in students if s["name"] == name), 0)
+            marks.append(mark)
 
-        # Send response
-        response = json.dumps({"marks": marks})
-        self.wfile.write(response.encode('utf-8'))
+        # Response
+        response = {"marks": marks}
+        self.wfile.write(json.dumps(response).encode("utf-8"))
