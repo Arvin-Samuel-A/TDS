@@ -13,7 +13,7 @@ class handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         # Load student data from Environment Variable (or file)
-        students = json.loads(os.getenv("STUDENTS_JSON", "[]"))
+        students = json.loads(os.getenv("q-vercel-python.json", "[]"))
 
         # Parse query parameters
         query_params = parse_qs(urlparse(self.path).query)
