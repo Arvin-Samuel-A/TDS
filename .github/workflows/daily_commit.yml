@@ -2,28 +2,35 @@ name: Daily Commit
 
 on:
   schedule:
-    - cron: "0 2 * * *"  # Runs daily at 2:00 AM UTC
-  workflow_dispatch:  # Allows manual triggers
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch: # Allows manual triggering as well
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: 23f2000627@ds.study.iitm.ac.in
-        run: echo "Hello, world!"
-        
-  add-commit:
+  add_commit:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-    - name: Make a Dummy Commit - 23f2000627@ds.study.iitm.ac.in
-      run: |
-        echo "Last run at $(date)" > commit-log.txt
-        git config --global user.email "23f2000627@ds.study.iitm.ac.in"
-        git config --global user.name "GitHub Bot"
-        git add commit-log.txt
-        git commit -m "Daily commit at $(date)"
-        git push origin main
+      - name: Set Up Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "bot@github.com"
+
+      - name: Check for Changes
+        id: check_changes
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes detected."
+            exit 0
+          fi
+
+      - name: Commit and Push Changes
+        if: success()
+        run: |
+          git add .
+          git commit -m "Daily commit: $(date)"
+          git push origin main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
