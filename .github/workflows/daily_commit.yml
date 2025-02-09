@@ -1,0 +1,23 @@
+name: Daily Commit
+
+on:
+  schedule:
+    - cron: "0 2 * * *"  # Runs daily at 2:00 AM UTC
+  workflow_dispatch:  # Allows manual triggers
+
+jobs:
+  add-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Make a Dummy Commit - 23f2000627@ds.study.iitm.ac.in
+      run: |
+        echo "Last run at $(date)" > commit-log.txt
+        git config --global user.email "23f2000627@ds.study.iitm.ac.in"
+        git config --global user.name "GitHub Bot"
+        git add commit-log.txt
+        git commit -m "Daily commit at $(date)"
+        git push origin main
