@@ -43,4 +43,5 @@ def scrape_imdb() -> List[Dict[str, str]]:
             movies.append({"id": movie_id, "title": title, "year": year, "rating": rating})
 
     print(movies)
+    
 scrape_imdb()
